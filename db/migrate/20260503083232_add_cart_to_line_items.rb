@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddCartToLineItems < ActiveRecord::Migration[7.1]
   def change
     add_reference :line_items, :cart, null: false, foreign_key: true

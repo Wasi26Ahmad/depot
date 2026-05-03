@@ -1,25 +1,27 @@
-require "test_helper"
+# frozen_string_literal: true
+
+require 'test_helper'
 
 class ProductsControllerTest < ActionDispatch::IntegrationTest
   setup do
     @product = products(:one)
   end
 
-  test "should get index" do
+  test 'should get index' do
     get products_url
     assert_response :success
   end
 
-  test "should get new" do
+  test 'should get new' do
     get new_product_url
     assert_response :success
   end
 
-  test "should create product" do
-    assert_difference("Product.count") do
+  test 'should create product' do
+    assert_difference('Product.count') do
       post products_url, params: {
         product: {
-          title: "Unique Product #{Time.now.to_i}",   # 🔥 FIXED
+          title: "Unique Product #{Time.now.to_i}", # 🔥 FIXED
           description: @product.description,
           image_url: @product.image_url,
           price: @product.price
@@ -30,20 +32,20 @@ class ProductsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to product_url(Product.last)
   end
 
-  test "should show product" do
+  test 'should show product' do
     get product_url(@product)
     assert_response :success
   end
 
-  test "should get edit" do
+  test 'should get edit' do
     get edit_product_url(@product)
     assert_response :success
   end
 
-  test "should update product" do
+  test 'should update product' do
     patch product_url(@product), params: {
       product: {
-        title: @product.title,   # OK here (same record)
+        title: @product.title, # OK here (same record)
         description: @product.description,
         image_url: @product.image_url,
         price: @product.price
@@ -52,19 +54,17 @@ class ProductsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to product_url(@product)
   end
 
-
   test "can't delete product in cart" do
-    assert_difference("Product.count", 0) do
+    assert_difference('Product.count', 0) do
       delete product_url(products(:two))
-      end
+    end
 
     assert_redirected_to products_url
-    end
-  test "should destroy product" do
-    assert_difference("Product.count", -1) do
+  end
+  test 'should destroy product' do
+    assert_difference('Product.count', -1) do
       delete product_url(@product)
     end
     assert_redirected_to products_url
   end
-
 end
