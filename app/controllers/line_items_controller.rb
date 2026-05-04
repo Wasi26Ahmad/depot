@@ -23,7 +23,6 @@ class LineItemsController < ApplicationController
 
   # POST /line_items or /line_items.json
 
-
   # PATCH/PUT /line_items/1 or /line_items/1.json
   def update
     respond_to do |format|
@@ -71,6 +70,6 @@ class LineItemsController < ApplicationController
 
   # Only allow a list of trusted parameters through.
   def line_item_params
-    params.require( :line_item).permit( :product_id)
+    params.require(:line_item).permit(:product_id)
   end
 end
