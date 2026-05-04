@@ -5,6 +5,8 @@ require 'test_helper'
 class ProductsControllerTest < ActionDispatch::IntegrationTest
   setup do
     @product = products(:one)
+    @user = users(:one)
+    login_as(@user)
   end
 
   test 'should get index' do

@@ -5,6 +5,8 @@ require 'test_helper'
 class LineItemsControllerTest < ActionDispatch::IntegrationTest
   setup do
     @line_item = line_items(:one)
+    @user = users(:one)
+    login_as(@user)
   end
 
   test 'should get index' do

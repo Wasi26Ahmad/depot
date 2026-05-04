@@ -5,6 +5,8 @@ require 'test_helper'
 class OrdersControllerTest < ActionDispatch::IntegrationTest
   setup do
     @order = orders(:one)
+    @user = users(:one)
+    login_as(@user)
   end
 
   test 'requires item in cart' do

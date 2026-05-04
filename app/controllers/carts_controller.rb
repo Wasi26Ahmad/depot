@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class CartsController < ApplicationController
+  skip_before_action :authorize, only: %i[ create update destroy ]
   before_action :set_cart, only: %i[show edit update destroy]
 
   # GET /carts or /carts.json
