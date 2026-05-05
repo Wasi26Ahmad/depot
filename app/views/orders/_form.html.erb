@@ -1,11 +1,11 @@
-<%= form_with(model: order, class: "contents") do |form| %>
-  <% if order.errors.any? %>
-    <div id="error_explanation" class="bg-red-50 text-red-500 px-3 py-2 font-medium rounded-lg mt-3">
-      <h2>
-        <%= pluralize(order.errors.count, "error") %> prohibited this order from being saved:
-      </h2>
+<%= form_with(model: order, class: "max-w-xl mx-auto bg-white p-6 rounded-xl shadow space-y-5") do |form| %>
 
-      <ul>
+  <% if order.errors.any? %>
+    <div class="bg-red-50 text-red-600 px-4 py-3 rounded-lg">
+      <h2 class="font-semibold mb-2">
+        <%= pluralize(order.errors.count, "error") %> prevented this order:
+      </h2>
+      <ul class="list-disc ml-5 text-sm">
         <% order.errors.each do |error| %>
           <li><%= error.full_message %></li>
         <% end %>
@@ -13,30 +13,45 @@
     </div>
   <% end %>
 
-  <div class="my-5">
-    <%= form.label :name %>
-    <%= form.text_field :name, class: "input-field" %>
+  <div>
+    <%= form.label :name, class: "block font-medium mb-1" %>
+    <%= form.text_field :name, class: "w-full input-field" %>
   </div>
 
-  <div class="my-5">
-    <%= form.label :address %>
-    <%= form.text_area :address, rows: 4, class: "input-field" %>
+  <div>
+    <%= form.label :address, class: "block font-medium mb-1" %>
+    <%= form.text_area :address, rows: 4, class: "w-full input-field" %>
   </div>
 
-  <div class="my-5">
-    <%= form.label :email %>
-    <%= form.email_field :email, class: "input-field" %>
+  <div>
+    <%= form.label :email, class: "block font-medium mb-1" %>
+    <%= form.email_field :email, class: "w-full input-field" %>
   </div>
 
-  <div class="my-5">
-    <%= form.label :pay_type %>
-    <%= form.select :pay_type, Order.pay_types.keys,
-                    { prompt: 'Select a payment method' },
-                    class: "input-field" %>
+  <!-- Payment Section -->
+  <div data-controller="payment" class="border-t pt-4">
+    <h3 class="font-semibold mb-2">Payment Method</h3>
+
+    <%= form.select :pay_type,
+                    Order.pay_types.keys.map { |key| [t(".pay_types.#{key}"), key] },
+                    { prompt: t('.pay_prompt_html') },
+                    class: "w-full input-field",
+                    data: {
+                      payment_target: "selection",
+                      action: "change->payment#showAdditionalFields"
+                    } %>
+
+    <!-- Dynamic fields -->
+    <div class="mt-4 space-y-4">
+      <%= render partial: 'check', locals: { form: form } %>
+      <%= render partial: 'cc', locals: { form: form } %>
+      <%= render partial: 'po', locals: { form: form } %>
+    </div>
   </div>
 
-  <div class="inline">
-    <%= form.submit 'Place Order',
-                    class: "rounded-lg py-3 px-5 bg-green-200 text-black inline-block font-medium cursor-pointer" %>
+  <div>
+    <%= form.submit t('.submit'),
+                    class: "w-full bg-green-600 text-white py-3 rounded-lg font-medium hover:bg-green-700 transition" %>
   </div>
+
 <% end %>

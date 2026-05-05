@@ -23,7 +23,7 @@ Rails.application.configure do
   end
 
   Rails.application.configure do
-    config.action_mailer.delivery_method = :test
+    config.action_mailer.delivery_method = :letter_opener
   end
 
   config.active_storage.service = :local
@@ -35,6 +35,7 @@ Rails.application.configure do
   config.active_record.migration_error = :page_load
   config.active_record.verbose_query_logs = true
   config.active_job.verbose_enqueue_logs = true
+  config.active_job.queue_adapter = :async
   config.assets.quiet = true
   config.action_cable.disable_request_forgery_protection = true
   config.action_controller.raise_on_missing_callback_actions = true

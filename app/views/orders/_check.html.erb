@@ -1,0 +1,15 @@
+<div data-payment-target="check" class="hidden">
+  <div class="grid grid-cols-2 gap-4">
+
+    <div>
+      <%= form.label :routing_number, class: "block text-sm font-medium" %>
+      <%= form.text_field :routing_number, class: "input-field w-full" %>
+    </div>
+
+    <div>
+      <%= form.label :account_number, class: "block text-sm font-medium" %>
+      <%= form.text_field :account_number, class: "input-field w-full" %>
+    </div>
+
+  </div>
+</div>

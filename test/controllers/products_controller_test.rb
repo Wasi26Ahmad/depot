@@ -3,10 +3,17 @@
 require 'test_helper'
 
 class ProductsControllerTest < ActionDispatch::IntegrationTest
+  include ActionDispatch::TestProcess::FixtureFile
   setup do
     @product = products(:one)
     @user = users(:one)
     login_as(@user)
+
+    @product.image.attach(
+      io: File.open(Rails.root.join('test/fixtures/files/ruby.jpg')),
+      filename: 'ruby.jpg',
+      content_type: 'image/jpeg'
+    )
   end
 
   test 'should get index' do
@@ -23,10 +30,13 @@ class ProductsControllerTest < ActionDispatch::IntegrationTest
     assert_difference('Product.count') do
       post products_url, params: {
         product: {
-          title: "Unique Product #{Time.now.to_i}", # 🔥 FIXED
+          title: "Unique Product #{Time.now.to_i}",
           description: @product.description,
-          image_url: @product.image_url,
-          price: @product.price
+          price: @product.price,
+          image: fixture_file_upload(
+            Rails.root.join('test/fixtures/files/ruby.jpg'),
+            'image/jpeg'
+          )
         }
       }
     end
@@ -47,10 +57,13 @@ class ProductsControllerTest < ActionDispatch::IntegrationTest
   test 'should update product' do
     patch product_url(@product), params: {
       product: {
-        title: @product.title, # OK here (same record)
+        title: @product.title,
         description: @product.description,
-        image_url: @product.image_url,
-        price: @product.price
+        price: @product.price,
+        image: fixture_file_upload(
+          Rails.root.join('test/fixtures/files/ruby.jpg'),
+          'image/jpeg'
+        )
       }
     }
     assert_redirected_to product_url(@product)
@@ -63,10 +76,12 @@ class ProductsControllerTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to products_url
   end
+
   test 'should destroy product' do
     assert_difference('Product.count', -1) do
       delete product_url(@product)
     end
+
     assert_redirected_to products_url
   end
 end

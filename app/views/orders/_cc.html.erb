@@ -1,0 +1,15 @@
+<div data-payment-target="cc" class="hidden">
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+    <div>
+      <%= form.label :credit_card_number, class: "block text-sm font-medium mb-1" %>
+      <%= form.text_field :credit_card_number, class: "input-field w-full" %>
+    </div>
+
+    <div>
+      <%= form.label :expiration_date, class: "block text-sm font-medium mb-1" %>
+      <%= form.text_field :expiration_date, placeholder: "MM/YY", class: "input-field w-full" %>
+    </div>
+
+  </div>
+</div>
