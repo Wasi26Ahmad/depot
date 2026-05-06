@@ -33,13 +33,13 @@ products.each do |p|
     price: p[:price]
   )
 
-  file_path = Rails.root.join("test/fixtures/files/#{p[:image]}")
+  file_path = Rails.root.join("db/seeds/images", p[:image])
 
   if File.exist?(file_path)
     product.image.attach(
       io: File.open(file_path),
       filename: p[:image],
-      content_type: 'image/jpeg'
+      content_type: 'image/jpg'
     )
   else
     puts "Missing file: #{file_path}"

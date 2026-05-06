@@ -12,6 +12,7 @@ services:
     build: .
     volumes:
       - ./log:/home/app/depot/log
+      - storage:/app/storage
     ports:
       - "8000:3000"
     depends_on:
@@ -28,3 +29,4 @@ secrets:
 
 volumes:
   pgdata:
+  storage:
