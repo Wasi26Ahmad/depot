@@ -26,26 +26,58 @@ class OrdersController < ApplicationController
   # POST /orders or /orders.json
   #  rubocop:disable Metrics/AbcSize
   def create
+    key = request.headers['Idempotency-Key'] || params[:idempotency_key]
+
+    if key.present?
+      existing_order = Order.find_by(idempotency_key: key)
+
+      if existing_order
+        respond_to do |format|
+          format.html do
+            redirect_to store_index_url, notice: 'Order already processed.'
+          end
+          format.json do
+            render :show, status: :ok, location: existing_order
+          end
+        end
+        return
+      end
+    end
+
     @order = Order.new(order_params)
+    @order.idempotency_key = key if key.present?
     @order.add_line_items_from_cart(@cart)
+
     respond_to do |format|
-      if @order.save
-        Cart.destroy(session[:cart_id])
-        session[:cart_id] = nil
-        ChargeOrderJob.perform_later(@order, pay_type_params.to_h)
+      begin
+        if @order.save
+          Cart.destroy(session[:cart_id])
+          session[:cart_id] = nil
+          session[:idem_key] = nil
+
+          ChargeOrderJob.perform_later(@order, pay_type_params.to_h)
+
+          format.html do
+            redirect_to store_index_url, notice: 'Thank you for your order.'
+          end
+          format.json do
+            render :show, status: :created, location: @order
+          end
+        else
+          format.html { render :new, status: :unprocessable_entity }
+          format.json do
+            render json: @order.errors, status: :unprocessable_entity
+          end
+        end
+      rescue ActiveRecord::RecordNotUnique
+        #Race Condition...key mile gele arki
+        existing_order = Order.find_by(idempotency_key: key)
+
         format.html do
-          redirect_to store_index_url, notice:
-          'Thank you for your order.'
+          redirect_to store_index_url, notice: 'Order already processed.'
         end
         format.json do
-          render :show, status: :created,
-                        location: @order
-        end
-      else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json do
-          render json: @order.errors,
-                 status: :unprocessable_entity
+          render :show, status: :ok, location: existing_order
         end
       end
     end
@@ -98,7 +130,7 @@ class OrdersController < ApplicationController
 
   # Only allow a list of trusted parameters through.
   def order_params
-    params.require(:order).permit(:name, :address, :email, :pay_type)
+    params.require(:order).permit(:name, :address, :email, :pay_type, :idempotency_key)
   end
 
   def ensure_cart_isnt_empty

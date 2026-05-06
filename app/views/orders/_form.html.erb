@@ -1,4 +1,6 @@
 <%= form_with(model: order, class: "max-w-xl mx-auto bg-white p-6 rounded-xl shadow space-y-5") do |form| %>
+  <% session[:idem_key] ||= SecureRandom.uuid %>
+  <%= hidden_field_tag :idempotency_key, session[:idem_key] %>
 
   <% if order.errors.any? %>
     <div class="bg-red-50 text-red-600 px-4 py-3 rounded-lg">
