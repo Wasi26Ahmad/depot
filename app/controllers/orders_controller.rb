@@ -70,7 +70,7 @@ class OrdersController < ApplicationController
           end
         end
       rescue ActiveRecord::RecordNotUnique
-        #Race Condition...key mile gele arki
+        #Race Condition
         existing_order = Order.find_by(idempotency_key: key)
 
         format.html do
